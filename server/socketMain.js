@@ -12,7 +12,7 @@ const socketMain = (io) => {
     console.log(`Someone connected on worker ${process.pid}`);
     socket.emit(
       "welcome",
-      "Welcome to our cluser driven socket.io server for performance moniter"
+      "Welcome to our cluser driven socket.io server for performance moniter "
     );
     socket.on("prefData", (data) => {
       socket.to("reactClient").emit("prefData", data);
