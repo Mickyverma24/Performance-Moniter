@@ -5,7 +5,7 @@ const { Server } = require("socket.io");
 const numCPUs = require("os").cpus().length;
 const { setupMaster, setupWorker } = require("@socket.io/sticky");
 const { createAdapter, setupPrimary } = require("@socket.io/cluster-adapter");
-
+const socketMain = require('./socketMain.js')
 if (cluster.isPrimary) {
   console.log(`Master ${process.pid} is running`);
 
@@ -77,8 +77,5 @@ if (cluster.isPrimary) {
   // setup connection with the primary process
   setupWorker(io);
 
-  io.on("connection", (socket) => {
-    console.log(`Someone connected on worker ${process.pid}`);
-    socket.emit('welcome',"Welcome to our cluser driven socket.io server for performance moniter");
-  });
+  socketMain(io);
 }
