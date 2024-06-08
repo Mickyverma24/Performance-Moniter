@@ -21,13 +21,13 @@ if (cluster.isPrimary) {
 
   // needed for packets containing buffers (you can ignore it if you only send plaintext objects)
   // Node.js < 16.0.0
-  cluster.setupMaster({
-    serialization: "advanced",
-  });
-  // Node.js > 16.0.0
-  // cluster.setupPrimary({
+  // cluster.setupMaster({
   //   serialization: "advanced",
   // });
+  // Node.js > 16.0.0
+  cluster.setupPrimary({
+    serialization: "advanced",
+  });
 
   httpServer.listen(3000);
 
@@ -42,8 +42,34 @@ if (cluster.isPrimary) {
 } else {
   console.log(`Worker ${process.pid} started`);
 
-  const httpServer = http.createServer();
-  const io = new Server(httpServer);
+  // const httpServer = http.createServer();
+  const httpServer = http.createServer((req, res) => {
+    // Set CORS headers
+    res.setHeader("Access-Control-Allow-Origin", "http://127.0.0.1:5173");
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+    );
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "X-Requested-With,content-type"
+    );
+    res.setHeader("Access-Control-Allow-Credentials", true);
+
+    if (req.method === "OPTIONS") {
+      res.writeHead(204);
+      res.end();
+    } else {
+      res.writeHead(404);
+      res.end();
+    }
+  });
+  const io = new Server(httpServer, {
+    cors: {
+      origin: "http://127.0.0.1:5173",
+      credentials: true,
+    },
+  });
 
   // use the cluster adapter
   io.adapter(createAdapter());
@@ -52,6 +78,7 @@ if (cluster.isPrimary) {
   setupWorker(io);
 
   io.on("connection", (socket) => {
-    /* ... */
+    console.log(`Someone connected on worker ${process.pid}`);
+    socket.emit('welcome',"Welcome to our cluser driven socket.io server for performance moniter");
   });
 }
