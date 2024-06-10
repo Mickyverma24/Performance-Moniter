@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import socket from "./utils/socketConnection.js";
 import MoniterScreen from "./components/MonitorScreen.jsx";
+import './App.css';
 function App() {
   const [performanceData, setPerformanceData] = useState({});
   useEffect(() => {

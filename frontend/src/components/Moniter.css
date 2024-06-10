@@ -6,10 +6,10 @@
 .moniter{
     margin-bottom: 25px;
     /* taken from https://css-tricks.com/examples/GradientBorder/ */
-    border-bottom: 3px solid black;
+    border-bottom: 3px solid rgb(105, 95, 95);
     background-image: 
-        linear-gradient(transparent, #000),
-        linear-gradient(transparent, #000);
+        linear-gradient(transparent, rgb(105, 95, 95)),
+        linear-gradient(transparent, rgb(105, 95, 95));
     background-size: 3px 100%;
     background-position: 0 0, 100% 0;
     background-repeat: no-repeat; 
@@ -29,7 +29,7 @@
 }
 
 .cpu,.mem{
-    background-color: white;
+    background-color: rgb(10, 9, 9);
     position: relative;
     text-align: center
 }
@@ -40,6 +40,8 @@
     top: 50%;
     left: 50%;
     font-size: 30px;
+    color: black;
+    background-color: rgb(203, 203, 203);
 }
 
 .canvas-wrapper{
