@@ -1,5 +1,6 @@
 const socketMain = (io) => {
   io.on("connection", (socket) => {
+    let runningMachineMacAddress;
     const auth = socket.handshake.auth;
     if (auth.token == "aaeygaotohmodihe") {
       socket.join("nodeClient");
@@ -15,7 +16,18 @@ const socketMain = (io) => {
       "Welcome to our cluser driven socket.io server for performance moniter "
     );
     socket.on("prefData", (data) => {
+      if (!runningMachineMacAddress) runningMachineMacAddress = data.mac;
       socket.to("reactClient").emit("prefData", data);
+      io.to("reactClient").emit("isConnected", {
+        runningMachineMacAddress,
+        isLive: true,
+      });
+    });
+    socket.on("disconnect", (anyReason) => {
+      io.to("reactClient").emit("isConnected", {
+        runningMachineMacAddress,
+        isLive: false,
+      });
     });
   });
 };
