@@ -1,9 +1,20 @@
-import React from "react";
+import {useState,useEffect} from "react";
 import Mem from "./Mem";
 import Cpu from "./Cpu";
 import Info from "./Info";
+import socket from "../utils/socketConnection.js";
 import './Moniter.css';
+
 const MonitorScreen = ({ data }) => {
+  const [online,setOnline] = useState(true);
+  useEffect(() => {
+    socket.on('isConnected',({runningMachineMacAddress,isLive})=>{
+      if (runningMachineMacAddress===data.mac){
+        setOnline(isLive);
+      }
+    })
+  }, [])
+  const isLive = !online?<div className="not-active">CLIENT IS OFFLINE</div>:<></>;
   const {
     freeMemory,
     totalMemory,
@@ -22,7 +33,7 @@ const MonitorScreen = ({ data }) => {
   const cpuInfo = { osType, upTime, cpuType, numCores, cpuSpeed };
   return (
     <div className="moniter row justify-content-evenly">
-      <h3>Performance</h3>
+      {isLive}
       <Cpu data={cpuData} />
       <Mem data={memData} />
       <Info data={cpuInfo} />

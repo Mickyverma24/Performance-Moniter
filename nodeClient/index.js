@@ -16,7 +16,8 @@ socket.on("connect", () => {
     producedDataOfCpu()
   .then((data) => {
     let prefData = data;
-    prefData.mac = macAddres;
+    // prefData.mac = macAddres + Math.floor(Math.random()*100000); // run when only you are in dev mode
+    prefData.mac = macAddres; // run when you are only in prod mode;
     // console.log(prefData)
     socket.emit('prefData',prefData);
   })
