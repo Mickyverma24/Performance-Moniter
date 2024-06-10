@@ -22,7 +22,7 @@ const MonitorScreen = ({ data }) => {
   const cpuInfo = { osType, upTime, cpuType, numCores, cpuSpeed };
   return (
     <div className="moniter row justify-content-evenly">
-      <h1>moni</h1>
+      <h3>Performance</h3>
       <Cpu data={cpuData} />
       <Mem data={memData} />
       <Info data={cpuInfo} />
