@@ -1,17 +1,20 @@
-// here will the Socket.io server which will take data from node client and give it to the frontend
+// this is the main server which handle data from different - all node clients and send data to the frontend using socket.io
+
+//   ------> Node core moudles <----------------
 const cluster = require("cluster"); // to use multi ple threads of the node
 const http = require("http");
-const { Server } = require("socket.io");
 const numCPUs = require("os").cpus().length;
+//   ------> Third Party moudles <----------------
+const { Server } = require("socket.io");
 const { setupMaster, setupWorker } = require("@socket.io/sticky");
 const { createAdapter, setupPrimary } = require("@socket.io/cluster-adapter");
-const socketMain = require('./socketMain.js')
+//   ------> MY own created moudles <----------------
+const socketMain = require("./socketMain.js");
+
 if (cluster.isPrimary) {
   console.log(`Master ${process.pid} is running`);
-
   const httpServer = http.createServer();
-
-  // setup sticky sessions
+ // setup sticky sessions
   setupMaster(httpServer, {
     loadBalancingMethod: "least-connection",
   });
@@ -20,11 +23,6 @@ if (cluster.isPrimary) {
   setupPrimary();
 
   // needed for packets containing buffers (you can ignore it if you only send plaintext objects)
-  // Node.js < 16.0.0
-  // cluster.setupMaster({
-  //   serialization: "advanced",
-  // });
-  // Node.js > 16.0.0
   cluster.setupPrimary({
     serialization: "advanced",
   });
@@ -41,8 +39,7 @@ if (cluster.isPrimary) {
   });
 } else {
   console.log(`Worker ${process.pid} started`);
-
-  // const httpServer = http.createServer();
+  // creating http server to for making use in socket.io server
   const httpServer = http.createServer((req, res) => {
     // Set CORS headers
     res.setHeader("Access-Control-Allow-Origin", "http://127.0.0.1:5173");
@@ -64,6 +61,8 @@ if (cluster.isPrimary) {
       res.end();
     }
   });
+
+// socket.io server creation here 'io' all in the code represent socket.io server
   const io = new Server(httpServer, {
     cors: {
       origin: "http://127.0.0.1:5173",
@@ -76,6 +75,6 @@ if (cluster.isPrimary) {
 
   // setup connection with the primary process
   setupWorker(io);
-
+  // 
   socketMain(io);
 }

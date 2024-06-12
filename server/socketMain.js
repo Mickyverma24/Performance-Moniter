@@ -1,10 +1,13 @@
+// this file only includes what data we have get from node client and then what we wil send to the frontend via server
+// more formally only includes wire which transwer the traffic from one client to another
+
 const socketMain = (io) => {
   io.on("connection", (socket) => {
     let runningMachineMacAddress;
     const auth = socket.handshake.auth;
     if (auth.token == "aaeygaotohmodihe") {
       socket.join("nodeClient");
-    } else if (auth.token == "harharmodi") {
+    } else if (auth.token == "aidofh;aoidsh;aihdf") {
       socket.join("reactClient");
     } else {
       socket.disconnect();
